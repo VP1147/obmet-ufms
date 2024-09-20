@@ -35,13 +35,13 @@ try:
 
     # Convert measured values to float
     df_avg[cols] = df_avg[cols].astype(float)
-    #df["PTemp_C_Avg"] = df["PTemp_C_Avg"].astype(float)
-    print(df_avg)
+    #print(df_avg)
 
     # Calculate the average values of each day
-    print("<<<--- Daily Avg --->>>")
-    df_avg = df_avg.resample('d', on='TIMESTAMP').mean().dropna(how='all')
-    print(df_avg)
+    #print("<<<--- Daily Avg --->>>")
+    df_avg = df_avg.resample('d', on='TIMESTAMP').mean().dropna(how='all').round(3)
+    #print(df_avg)
+    print('.')
 
     ## MAX-type values
     max_data = pd.read_csv(file, sep=";", skiprows=[0,2,3], usecols=maxs)
@@ -50,9 +50,10 @@ try:
     cols = df_max.columns.difference(['TIMESTAMP'])
     df_max[cols] = df_max[cols].applymap(atof)
     df_max[cols] = df_max[cols].astype(float)
-    print("<<<--- Daily Max --->>>")
-    df_max = df_max.resample('d', on='TIMESTAMP').max().dropna(how='all')
-    print(df_max)
+    #print("<<<--- Daily Max --->>>")
+    df_max = df_max.resample('d', on='TIMESTAMP').max().dropna(how='all').round(3)
+    #print(df_max)
+    print('.')
 
     ## MIN-type values
     min_data = pd.read_csv(file, sep=";", skiprows=[0,2,3], usecols=mins)
@@ -61,9 +62,10 @@ try:
     cols = df_min.columns.difference(['TIMESTAMP'])
     df_min[cols] = df_min[cols].applymap(atof)
     df_min[cols] = df_min[cols].astype(float)
-    print("<<<--- Daily Min --->>>")
-    df_min = df_min.resample('d', on='TIMESTAMP').min().dropna(how='all')
-    print(df_min)
+    #print("<<<--- Daily Min --->>>")
+    df_min = df_min.resample('d', on='TIMESTAMP').min().dropna(how='all').round(3)
+    #print(df_min)
+    print('.')
 
     ## TOTAL-type values
     tot_data = pd.read_csv(file, sep=";", skiprows=[0,2,3], usecols=tots)
@@ -72,19 +74,22 @@ try:
     cols = df_tot.columns.difference(['TIMESTAMP'])
     df_tot[cols] = df_tot[cols].applymap(atof)
     df_tot[cols] = df_tot[cols].astype(float)
-    print("<<<--- Daily Total --->>>")
-    df_tot = df_tot.resample('d', on='TIMESTAMP').sum().dropna(how='all')
-    print(df_tot)
+    #print("<<<--- Daily Total --->>>")
+    df_tot = df_tot.resample('d', on='TIMESTAMP').sum().dropna(how='all').round(3)
+    #print(df_tot)
+    print('.')
 
     ## Append all dataframes into FINAL DATA
     df_f = df_avg.join([df_max,df_min,df_tot])
-    print(df_f)
+    #print(df_f)
+    print('.')
 
-
-    ## Send to a new CSV
-    df_f.to_csv('resultado.csv', index=True)
+    ## Send the final data to a new CSV
+    new_file = "resultado.csv"
+    df_f.to_csv(new_file, index=True)
     print(">>> Concluído!")
+    print(f">>> Saída: '{new_file}'")
 except FileNotFoundError:
-    print(f"File '{file}' not found.")
+    print(f">>> O arquivo '{file}' não foi encontrado.")
 except Exception as e:
-    print(f"An error occurred: {e}")
+    print(f">>> Ocorreu um erro: {e}")
